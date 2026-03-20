@@ -8,8 +8,10 @@ import com.ecom.enums.UserRole;
 import com.ecom.model.User;
 import com.ecom.repository.UserRepository;
 import com.ecom.service.UserService;
+import com.ecom.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,11 +39,12 @@ public class UserServiceImpl implements UserService {
         if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
             throw new RuntimeException("Email Already Exists");
         }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         User user = User.builder()
                 .userName(userRequest.getUserName())
                 .firstName(userRequest.getFirstName())
                 .lastName(userRequest.getLastName())
-                .password(userRequest.getPassword())
+                .password(encoder.encode(userRequest.getPassword()))
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .address(userRequest.getAddress())
@@ -52,6 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(Long id, UserRequest updateUserRequest) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return userRepository.findById(id)
                 .map(user -> {
                     user.setUserName(updateUserRequest.getUserName());
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
                     user.setPhone(updateUserRequest.getPhone());
                     user.setAddress(updateUserRequest.getAddress());
                     if(null != updateUserRequest.getPassword() &&  !updateUserRequest.getPassword().isBlank()){
-                        user.setPassword(updateUserRequest.getPassword());
+                        user.setPassword(encoder.encode(updateUserRequest.getPassword()));
                     }
                     userRepository.save(user);
                     return true;
@@ -81,11 +85,15 @@ public class UserServiceImpl implements UserService {
         User user = optionalUser
                 .orElseThrow(() -> new RuntimeException("Invalid user name / email"));
 
-        if(!request.getPassword().equals(user.getPassword())){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid Credentials");
         }
+        String token = JwtUtil.generateToken(user.getUserName());
+
         return LoginResponse.builder()
-                .token("dummyToken")
+                .token(token)
                 .message("Login Successfully")
                 .build();
     }
