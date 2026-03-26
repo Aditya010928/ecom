@@ -12,6 +12,3 @@ services:
     environment:
       SPRING_CONFIG_LOCATION: file:/config/application.yml
     restart: always
-
-volumes:
-  pgdata:
