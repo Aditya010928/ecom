@@ -6,5 +6,4 @@ COPY target/ecom-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-# external config location (IMPORTANT)
 ENTRYPOINT ["java", "-jar", "/app/app.jar", "--spring.config.additional-location=file:/config/"]
