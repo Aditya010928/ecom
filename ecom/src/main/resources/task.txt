@@ -1,0 +1,2 @@
+adding validator for token
+api for add user for admin  (hardcoded admin)

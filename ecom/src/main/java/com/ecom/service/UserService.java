@@ -1,9 +1,6 @@
 package com.ecom.service;
 
-import com.ecom.dto.LoginRequest;
-import com.ecom.dto.LoginResponse;
-import com.ecom.dto.UserRequest;
-import com.ecom.dto.UserResponse;
+import com.ecom.dto.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +12,6 @@ public interface UserService {
     void addUser(UserRequest userRequest);
     boolean updateUser(Long id, UserRequest updateUserRequest);
     LoginResponse login(LoginRequest request);
+
+    TokenValidationResponse validateToken(String token);
 }

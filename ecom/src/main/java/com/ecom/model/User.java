@@ -12,7 +12,7 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "db_test")
+@Table(name = "customer")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -45,6 +45,7 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
     private UserRole userRole = UserRole.CUSTOMER;
 

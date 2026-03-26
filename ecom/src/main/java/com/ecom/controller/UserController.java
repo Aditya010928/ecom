@@ -1,9 +1,6 @@
 package com.ecom.controller;
 
-import com.ecom.dto.LoginRequest;
-import com.ecom.dto.LoginResponse;
-import com.ecom.dto.UserRequest;
-import com.ecom.dto.UserResponse;
+import com.ecom.dto.*;
 import com.ecom.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,5 +46,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse>login(@RequestBody LoginRequest request){
         return ResponseEntity.ok(userService.login(request));
+    }
+    @PostMapping("/validate")
+    public ResponseEntity<TokenValidationResponse> validate(@RequestBody TokenRequest request) {
+        return ResponseEntity.ok(userService.validateToken(request.getToken()));
     }
 }

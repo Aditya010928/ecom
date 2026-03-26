@@ -1,14 +1,12 @@
 package com.ecom.service.impl;
 
-import com.ecom.dto.LoginRequest;
-import com.ecom.dto.LoginResponse;
-import com.ecom.dto.UserRequest;
-import com.ecom.dto.UserResponse;
+import com.ecom.dto.*;
 import com.ecom.enums.UserRole;
 import com.ecom.model.User;
 import com.ecom.repository.UserRepository;
 import com.ecom.service.UserService;
 import com.ecom.util.JwtUtil;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -96,6 +94,25 @@ public class UserServiceImpl implements UserService {
                 .token(token)
                 .message("Login Successfully")
                 .build();
+    }
+
+    @Override
+    @Cacheable(value = "tokenCache", key = "#token")
+    public TokenValidationResponse validateToken(String token) {
+        try {
+            String username = JwtUtil.validateToken(token);
+            return TokenValidationResponse.builder()
+                    .valid(true)
+                    .username(username)
+                    .message("Token is valid")
+                    .build();
+
+        } catch (Exception e) {
+            return TokenValidationResponse.builder()
+                    .valid(false)
+                    .message("Invalid or expired token")
+                    .build();
+        }
     }
 
     private UserResponse mapToResponse(User user) {
