@@ -1,14 +1,14 @@
-version: '3.8'
+  version: '3.8'
 
-services:
+  services:
 
-  ecom-app:
-    build: .
-    container_name: ecom-app
-    ports:
-      - "8081:8080"
-    volumes:
-      - ./application.yml:/config/application.yml
-    environment:
-      SPRING_CONFIG_LOCATION: file:/config/application.yml
-    restart: always
+    ecom-app:
+      build: .
+      container_name: ecom-app
+      ports:
+        - "8081:8080"
+      volumes:
+        - ./application.yml:/config/application.yml
+      environment:
+        SPRING_CONFIG_LOCATION: file:/config/application.yml
+      restart: always
